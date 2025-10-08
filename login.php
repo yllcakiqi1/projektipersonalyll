@@ -1,27 +1,32 @@
 <?php
 session_start();
 include '../includes/db.php';
-
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // SHA256 hash to match stored password
-    $hashed = hash('sha256', $password);
-
-    $stmt = $conn->prepare("SELECT * FROM admin_users WHERE username = ? AND password = ?");
-    $stmt->bind_param("ss", $username, $hashed);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows === 1) {
-        $_SESSION['admin'] = $username;
-        header("Location: dashboard.php");
+    if ($username === 'guest' && $password === 'guest123') {
+        $_SESSION['admin'] = 'Guest';
+        $_SESSION['role'] = 'guest';
+        header("Location: booking_form.php");
         exit();
     } else {
-        $error = "Invalid username or password";
+        $hashed = hash('sha256', $password);
+        $stmt = $conn->prepare("SELECT * FROM admin_users WHERE username=? AND password=?");
+        $stmt->bind_param("ss", $username, $hashed);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            $_SESSION['admin'] = $username;
+            $_SESSION['role'] = 'admin';
+            header("Location: admin_dashboard.php");
+            exit();
+        } else {
+            $error = "Invalid username or password";
+        }
     }
 }
 ?>
@@ -29,15 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Login</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <h2>Admin Login</h2>
+<div class="container">
+    <h2>Login</h2>
     <form method="post">
-        <input type="text" name="username" placeholder="Username" required><br><br>
-        <input type="password" name="password" placeholder="Password" required><br><br>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Login</button>
     </form>
-    <p style="color:red;"><?php echo $error; ?></p>
+    <p class="error"><?php echo $error; ?></p>
+    <p>Guest login: username <b>guest</b>, password <b>guest123</b></p>
+</div>
 </body>
 </html>
