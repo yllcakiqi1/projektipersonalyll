@@ -1,25 +1,18 @@
-<?php include 'includes/db.php'; ?>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Book Appointment</title>
+    <title>Appointment System</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h2>Book an Appointment</h2>
-    <form action="book.php" method="post">
-        Name: <input type="text" name="name" required><br><br>
-        Email: <input type="email" name="email" required><br><br>
-        Date: <input type="date" name="date" required><br><br>
-        Time: 
-        <select name="time" required>
-            <option value="09:00:00">9:00 AM</option>
-            <option value="10:00:00">10:00 AM</option>
-            <option value="11:00:00">11:00 AM</option>
-            <!-- Add more slots -->
-        </select><br><br>
-        Note (optional): <textarea name="note"></textarea><br><br>
-        <button type="submit">Book</button>
-    </form>
+<div class="container">
+    <h1>Welcome to the Appointment System</h1>
+    <p>Choose how you want to continue:</p>
+    <div class="buttons">
+        <a href="login.php"><button>Admin Login</button></a>
+        <a href="login.php"><button>Guest Login</button></a>
+    </div>
+    <p>Guest credentials: <b>username: guest</b>, <b>password: guest123</b></p>
+</div>
 </body>
 </html>
